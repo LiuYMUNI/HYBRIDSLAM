@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="octomap_server" type="octomap_saver" name="octomap_saver" args="-f /home/uas/test.bt"/>
+</launch>
