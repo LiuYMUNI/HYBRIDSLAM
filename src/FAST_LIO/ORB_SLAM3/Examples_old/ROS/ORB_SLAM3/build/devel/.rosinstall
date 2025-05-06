@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/uas/a_dependencies/catkin_ORB_SLAM_3_Ori/src/ORB_SLAM3/Examples_old/ROS/ORB_SLAM3/build/devel/setup.sh

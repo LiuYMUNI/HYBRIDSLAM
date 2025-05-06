@@ -1,0 +1,180 @@
+# cmake_minimum_required(VERSION 2.8.3)
+
+cmake_minimum_required(VERSION 3.8.0)
+
+project(fast_lio)
+
+
+SET(CMAKE_BUILD_TYPE "Release")
+# set(CMAKE_BUILD_TYPE Debug)
+
+set(CMAKE_CXX_STANDARD 17)
+
+# ADD_COMPILE_OPTIONS(-std=c++17 -march=native)
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3 -march=native ")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -O3 -march=native")
+
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall  -O3")
+# ADD_COMPILE_OPTIONS(-std=c++14 )
+# # ADD_COMPILE_OPTIONS(-std=c++14 )
+# set( CMAKE_CXX_FLAGS "-std=c++14 -O3" )
+
+add_definitions(-DROOT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fexceptions" )
+# set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+# add_definitions(-DCOMPILEDWITHC11)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread -std=c++0x -std=c++17 -fexceptions")
+
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -std=c++0x -std=c++14 -fexceptions")
+
+
+message("Current CPU archtecture: ${CMAKE_SYSTEM_PROCESSOR}")
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86)|(X86)|(amd64)|(AMD64)" )
+  include(ProcessorCount)
+  ProcessorCount(N)
+  message("Processer number:  ${N}")
+  if(N GREATER 4)
+    add_definitions(-DMP_EN)
+    add_definitions(-DMP_PROC_NUM=3)
+    message("core for MP: 3")
+  elseif(N GREATER 3)
+    add_definitions(-DMP_EN)
+    add_definitions(-DMP_PROC_NUM=2)
+    message("core for MP: 2")
+  else()
+    add_definitions(-DMP_PROC_NUM=1)
+  endif()
+else()
+  add_definitions(-DMP_PROC_NUM=1)
+endif()
+
+find_package(OpenMP QUIET)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS}")
+
+find_package(OpenCV 4.2 QUIET)
+if(NOT OpenCV_FOUND)
+   find_package(OpenCV 2.4.3 QUIET)
+   if(NOT OpenCV_FOUND)
+      message(FATAL_ERROR "OpenCV > 2.4.3 not found.")
+   endif()
+endif()
+find_package(Eigen3 3.4.0 REQUIRED)
+find_package(Pangolin REQUIRED)
+
+find_package(PythonLibs REQUIRED)
+find_path(MATPLOTLIB_CPP_INCLUDE_DIRS "matplotlibcpp.h")
+
+include_directories(
+${PROJECT_SOURCE_DIR}
+${PROJECT_SOURCE_DIR}/ORB_SLAM3/
+${PROJECT_SOURCE_DIR}/ORB_SLAM3/include
+${PROJECT_SOURCE_DIR}/ORB_SLAM3/include/CameraModels
+${Pangolin_INCLUDE_DIRS}
+)
+
+set(LIBS 
+${OpenCV_LIBS} 
+${EIGEN3_LIBS}
+${Pangolin_LIBRARIES}
+${PROJECT_SOURCE_DIR}/ORB_SLAM3/Thirdparty/DBoW2/lib/libDBoW2.so
+${PROJECT_SOURCE_DIR}/ORB_SLAM3/Thirdparty/g2o/lib/libg2o.so
+${PROJECT_SOURCE_DIR}/ORB_SLAM3/lib/libORB_SLAM3.so
+-lboost_system
+)
+
+find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  nav_msgs
+  sensor_msgs
+  roscpp
+  rospy
+  std_msgs
+  cv_bridge
+  image_transport
+  # pcl_ros
+  tf
+  livox_ros_driver2
+  message_generation
+  eigen_conversions
+)
+# set(PCL_DIR "/home/uas/a_dependencies/pcl1.21/install/share/pcl-1.21")
+# list(APPEND CMAKE_PREFIX_PATH "/home/uas/a_dependencies/pcl1.21/install")
+
+# set(Open3D_DIR "/home/uas/a_dependencies/Open3D/install/lib/cmake/Open3D")
+# set(Open3D_DIR "/usr/local/lib/cmake/Open3D")
+
+# find_package(Eigen3 3.4.0 REQUIRED)
+# find_package(PCL 1.8 REQUIRED)
+find_package(PCL 1.10.0 REQUIRED)
+# find_package(Open3D REQUIRED)
+
+
+# Add this line to log the found PCL version
+message(STATUS "Found PCL: ${PCL_VERSION}")
+
+
+message(Eigen: ${EIGEN3_INCLUDE_DIR})
+
+include_directories(
+	${catkin_INCLUDE_DIRS} 
+  ${EIGEN3_INCLUDE_DIR}
+  ${PCL_INCLUDE_DIRS}
+  ${PYTHON_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}/ORB_SLAM3/Thirdparty/Sophus
+  ${Open3D_INCLUDE_DIRS}
+  include)
+
+add_message_files(
+  FILES
+  Pose6D.msg
+)
+
+generate_messages(
+ DEPENDENCIES
+ geometry_msgs
+)
+
+catkin_package(
+  CATKIN_DEPENDS geometry_msgs nav_msgs roscpp rospy std_msgs message_runtime
+  DEPENDS EIGEN3 PCL
+  INCLUDE_DIRS
+)
+
+
+# add_executable(fastlio_mapping1 src/laserMapping.cpp include/ikd-Tree/ikd_Tree.cpp src/preprocess.cpp)
+# target_link_libraries(fastlio_mapping1 ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PYTHON_LIBRARIES} ${LIBS})  ${Open3D_LIBRARIES}${Open3D_LIBRARIES}
+# add_executable(fastlio_mapping src/laserMapping.cpp include/ikd-Tree/ikd_Tree.cpp src/preprocess.cpp)
+# target_link_libraries(fastlio_mapping ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PYTHON_LIBRARIES} ${LIBS})
+
+add_executable(fastlio_mapping_ori src/laserMappingori.cpp include/ikd-Tree/ikd_Tree.cpp src/preprocess.cpp)
+target_link_libraries(fastlio_mapping_ori ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PYTHON_LIBRARIES} ${LIBS})
+
+
+# add_executable(fastlio_mapping_stereo src/laserMapping_stereo.cpp include/ikd-Tree/ikd_Tree.cpp src/preprocess.cpp)
+# target_link_libraries(fastlio_mapping_stereo ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PYTHON_LIBRARIES} ${LIBS})
+
+add_executable(stereo_mapping src/stereomapping.cc include/ikd-Tree/ikd_Tree.cpp src/preprocess.cpp)
+target_link_libraries(stereo_mapping ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PYTHON_LIBRARIES} ${LIBS})
+
+# add_executable(stereo_inertial_mapping src/stereoinertialmapping.cc include/ikd-Tree/ikd_Tree.cpp src/preprocess.cpp)
+# target_link_libraries(stereo_inertial_mapping ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PYTHON_LIBRARIES} ${LIBS})
+
+# add_executable(stereo_inertial_mapping_trial src/stereoinertialmapping_trial.cc include/ikd-Tree/ikd_Tree.cpp src/preprocess.cpp)
+# target_link_libraries(stereo_inertial_mapping_trial ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PYTHON_LIBRARIES} ${LIBS})
+
+add_executable(hybrid_fusion src/stereoinertialmapping_trial_.cc include/ikd-Tree/ikd_Tree.cpp src/preprocess.cpp)
+target_link_libraries(hybrid_fusion ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PYTHON_LIBRARIES} ${LIBS})
+
+
+# target_link_libraries(fastlio_mapping ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${PYTHON_LIBRARIES})
+add_executable(stereo_inertial src/ros_stereo_inertial.cc)
+target_link_libraries(stereo_inertial ${catkin_LIBRARIES} ${LIBS})
+add_executable(stereo src/ros_stereo_1k.cc)
+target_link_libraries(stereo ${catkin_LIBRARIES} ${LIBS})
+# target_include_directories(fastlio_mapping PRIVATE ${PYTHON_INCLUDE_DIRS})

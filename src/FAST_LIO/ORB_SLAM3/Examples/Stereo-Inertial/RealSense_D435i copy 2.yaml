@@ -1,0 +1,113 @@
+%YAML:1.0
+
+#--------------------------------------------------------------------------------------------
+# Camera Parameters. Adjust them!
+#--------------------------------------------------------------------------------------------
+File.version: "1.0"
+
+Camera.type: "PinHole"
+
+# Left Camera calibration and distortion parameters (OpenCV)
+Camera1.fx: 395.3117535134932
+Camera1.fy: 393.7799040627981
+Camera1.cx: 323.46954503651826
+Camera1.cy: 239.72095491310055
+
+# dist1ortion parameters
+Camera1.k1: 0.0
+Camera1.k2: 0.0
+Camera1.p1: 0.0
+Camera1.p2: 0.0
+
+# Right Camera calibration and distortion parameters (OpenCV)
+Camera2.fx: 395.7451689364189
+Camera2.fy: 394.188609442222
+Camera2.cx: 323.2577174165619
+Camera2.cy: 239.75195454684067
+
+Stereo.T_c1_c2: !!opencv-matrix
+  rows: 4
+  cols: 4
+  dt: f
+  data: [1.0, 0.0, 0.0, 0.0500337,
+         0.0, 1.0, 0.0, 0.0,
+         0.0, 0.0, 1.0, 0.0,
+         0.0, 0.0, 0.0, 1.0]
+
+
+# Camera resolution
+Camera.width: 640
+Camera.height: 480
+
+# Lapping area between images
+Camera1.overlappingBegin: 15
+Camera1.overlappingEnd: 640
+
+Camera2.overlappingBegin: 0
+Camera2.overlappingEnd: 615
+
+# Camera frames per second
+Camera.fps: 15
+
+# Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
+Camera.RGB: 0
+
+# Close/Far threshold. Baseline times.
+Stereo.ThDepth: 60.0
+# Stereo.ThDepth: 100.0 # for messe
+# Stereo.ThDepth: 60.0 old, 40 best
+
+# Transformation from body-frame (imu) to left camera
+IMU.T_b_c1: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: f
+   data: [1.0, 0.0, 0.0, -0.005,
+          0.0, 1.0, 0.0, -0.005,
+          0.0, 0.0, 1.0, 0.0117,
+          0.0, 0.0, 0.0, 1.0]
+
+# IMU noise (Use those from VINS-mono)
+IMU.NoiseGyro: 0.1 # 0.004 (VINS) # 0.00016 (TUM) # 0.00016    # rad/s^0.5 
+IMU.NoiseAcc: 0.1 # 0.04 (VINS) # 0.0028 (TUM) # 0.0028     # m/s^1.5
+IMU.GyroWalk: 0.0001 # 0.000022 (VINS and TUM) rad/s^1.5 optimized
+IMU.AccWalk: 0.0001 # 0.0004 (VINS) # 0.00086 # 0.00086    # m/s^2.5
+# IMU.GyroWalk: 0.006271104190476192 # 0.000022 (VINS and TUM) rad/s^1.5 optimized
+# IMU.AccWalk: 0.0029045772619047624 # 0.0004 (VINS) # 0.00086 # 0.00086    # m/s^2.5
+# after long run drift, should use the optimized value, actually also bad
+IMU.Frequency: 200.0
+
+#--------------------------------------------------------------------------------------------
+# ORB Parameters
+#--------------------------------------------------------------------------------------------
+
+# ORB Extractor: Number of features per image
+ORBextractor.nFeatures: 1200 # Tested with 1250
+
+# ORB Extractor: Scale factor between levels in the scale pyramid 	
+ORBextractor.scaleFactor: 1.2
+
+# ORB Extractor: Number of levels in the scale pyramid	
+ORBextractor.nLevels: 8
+
+# ORB Extractor: Fast threshold
+# Image is divided in a grid. At each cell FAST are extracted imposing a minimum response.
+# Firstly we impose iniThFAST. If no corners are detected we impose a lower value minThFAST
+# You can lower these values if your images have low contrast			
+ORBextractor.iniThFAST: 10
+ORBextractor.minThFAST: 1 #before messe
+# ORBextractor.iniThFAST: 1
+# ORBextractor.minThFAST: 1 #before messe
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2.0
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 3.0
+Viewer.ViewpointX: 0.0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -3.5
+Viewer.ViewpointF: 500.0

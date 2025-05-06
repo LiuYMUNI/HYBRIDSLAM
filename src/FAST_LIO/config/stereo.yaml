@@ -1,0 +1,5 @@
+ORB_SLAM3:
+    VocabularyPath:  "/home/uas/a_dependencies/catkin_FASTLIOori_MA/src/FAST_LIO/ORB_SLAM3/Vocabulary/ORBvoc.txt"
+    SettingsPath:  "/home/uas/a_dependencies/catkin_FASTLIOori_MA/src/FAST_LIO/ORB_SLAM3/Examples/Stereo/RealSense_D435i.yaml"
+    ImuStereo:
+        DoRectify: "false"

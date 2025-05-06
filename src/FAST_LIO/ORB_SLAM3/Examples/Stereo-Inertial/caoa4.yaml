@@ -1,0 +1,153 @@
+%YAML:1.0
+
+#--------------------------------------------------------------------------------------------
+# Camera Parameters. Adjust them!
+#--------------------------------------------------------------------------------------------
+File.version: "1.0"
+
+Camera.type: "KannalaBrandt8"
+
+# Left Camera calibration and distortion parameters (OpenCV)
+Camera1.fx: 279.04811837193889
+Camera1.fy: 278.76472029736535
+Camera1.cx: 398.6757304359895
+Camera1.cy: 399.93552599613829
+
+# Kannala-Brandt distortion parameters
+Camera1.k1: 0.02039861791207188
+Camera1.k2: -0.0025668959097759848
+Camera1.k3: -0.006096201905237619
+Camera1.k4: 0.000994602463437802
+
+# Right Camera calibration and distortion parameters (OpenCV)
+Camera2.fx: 279.3512653835635
+Camera2.fy: 279.07676845531156
+Camera2.cx: 401.6220097114363
+Camera2.cy: 400.5303441862885
+
+# Kannala-Brandt distortion parameters
+Camera2.k1: 0.02164803397013043
+Camera2.k2: -0.005399633719876132
+Camera2.k3: -0.005399633719876132
+Camera2.k4: 0.000482156890697913
+
+Stereo.T_c1_c2: !!opencv-matrix
+  rows: 4
+  cols: 4
+  dt: f
+  data: [ 0.999992,  -0.00377866,  -0.00109458,   0.09144998587755186,
+          0.0037998,     0.999793,    0.0200023, 0.0021693675353639605,
+          0.00101877,   -0.0200063,     0.999799, -0.0003317476643749376,
+            0.0,0.0,0.0,1.0]
+
+# Camera resolution
+Camera.width: 800
+Camera.height: 800
+
+# Lapping area between images
+Camera1.overlappingBegin: 15
+Camera1.overlappingEnd: 800
+
+Camera2.overlappingBegin: 0
+Camera2.overlappingEnd: 785
+
+# Camera frames per second
+Camera.fps: 15
+
+# Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
+Camera.RGB: 0
+
+# Close/Far threshold. Baseline times.
+Stereo.ThDepth: 60.0
+
+# Transformation from body-frame (imu) to left camera
+IMU.T_b_c1: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: f
+   data: [0.999904, -0.00806805,  -0.0112207,  -0.0510243, 
+          -0.00790189,    -0.99986,   0.0147741,  -0.0245592,
+         -0.0113383,   -0.014684,   -0.999828,   -0.284265,
+          0.0, 0.0, 0.0, 1.0]
+
+# IMU noise (Use those from VINS-mono)
+IMU.NoiseGyro: 0.01 # 0.004 (VINS) # 0.00016 (TUM) # 0.00016    # rad/s^0.5 
+IMU.NoiseAcc: 0.1 # 0.04 (VINS) # 0.0028 (TUM) # 0.0028     # m/s^1.5
+# IMU.GyroWalk: 0.001 # 0.000022 (VINS and TUM) rad/s^1.5 no also bad
+# IMU.AccWalk: 0.001 # 0.0004 (VINS) # 0.00086 # 0.00086    # m/s^2.5
+IMU.GyroWalk: 0.00183093566 # 0.000022 (VINS and TUM) rad/s^1.5 optimized
+IMU.AccWalk: 0.01857755666 # 0.0004 (VINS) # 0.00086 # 0.00086    # m/s^2.5
+# after long run drift, should use the optimized value, actually also bad
+IMU.Frequency: 200.0
+
+#--------------------------------------------------------------------------------------------
+# ORB Parameters
+#--------------------------------------------------------------------------------------------
+
+# ORB Extractor: Number of features per image
+ORBextractor.nFeatures: 1000 # Tested with 1250
+
+# ORB Extractor: Scale factor between levels in the scale pyramid 	
+ORBextractor.scaleFactor: 1.2
+
+# ORB Extractor: Number of levels in the scale pyramid	
+ORBextractor.nLevels: 8
+
+# ORB Extractor: Fast threshold
+# Image is divided in a grid. At each cell FAST are extracted imposing a minimum response.
+# Firstly we impose iniThFAST. If no corners are detected we impose a lower value minThFAST
+# You can lower these values if your images have low contrast			
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2.0
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 3.0
+Viewer.ViewpointX: 0.0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -3.5
+Viewer.ViewpointF: 500.0
+
+# intrinsics 0:     279.048     278.765     398.676     399.936   0.0203986  -0.0025669  -0.0060962 0.000994602
+# T_i_c0:
+#    0.999904 -0.00806805  -0.0112207  -0.0510243
+# -0.00790189    -0.99986   0.0147741  -0.0245592
+#  -0.0113383   -0.014684   -0.999828   -0.284265
+#           0           0           0           1
+# intrinsics 1:     279.351     279.077     401.622      400.53    0.021648 -0.00539963 -0.00400021 0.000482157
+# T_i_c1:
+#    0.999855  -0.0116094  -0.0124444   0.0403795
+#  -0.0116757   -0.999918 -0.00526279  -0.0274266
+#  -0.0123823  0.00540732   -0.999909   -0.284998
+#           0           0           0           1
+# T_w_moc:
+# 1 0 0 0
+# 0 1 0 0
+# 0 0 1 0
+# 0 0 0 1
+# T_mark_i:
+# 1 0 0 0
+# 0 1 0 0
+# 0 0 1 0
+# 0 0 0 1
+# cam_time_offset_ns: -223091977
+# mocap_time_offset_ns: 0
+# accel_bias: -0.00641774  0.00338953   0.0459254
+# accel_scale:
+#    0.974482           0           0
+#  0.00109312    0.976042           0
+# -0.00193839  0.00524948    0.978924
+# gyro_bias: -0.000190176  0.000602481   0.00470015
+# gyro_scale:
+#     0.99511 -0.00387196 -0.00689825
+# -0.00606008     0.99627 -0.00296362
+#  -0.0114011  0.00599668    0.995578
+#  g -0.0223721     9.5705 -0.0212134 norm: 9.57055 g_mocap: -0.0223721     9.5705 -0.0212134
+# Current error: 301607 num_points 1454173 mean_error 0.207408 reprojection_error 1.56905e+06 mean reprojection 1.079 opt_time 15478ms.
+# Optimization Converged !!

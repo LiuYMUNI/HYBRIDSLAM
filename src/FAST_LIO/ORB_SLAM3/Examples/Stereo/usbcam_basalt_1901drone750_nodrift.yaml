@@ -1,0 +1,96 @@
+%YAML:1.0
+
+#--------------------------------------------------------------------------------------------
+# Camera Parameters. Adjust them!
+#--------------------------------------------------------------------------------------------
+File.version: "1.0"
+
+Camera.type: "KannalaBrandt8"
+
+# Left Camera calibration and distortion parameters (OpenCV)
+Camera1.fx: 262.1372690667472
+Camera1.fy: 261.99241584155728
+Camera1.cx: 373.69333268788639
+Camera1.cy: 375.1776517063391
+
+# Kannala-Brandt distortion parameters
+Camera1.k1: 0.021441950936931004
+Camera1.k2: -0.005118287208256893
+Camera1.k3: -0.004666433411279948
+Camera1.k4: 0.0007702905528890738
+
+# Right Camera calibration and distortion parameters (OpenCV)
+Camera2.fx: 262.0455049938498
+Camera2.fy: 261.7998421114647
+Camera2.cx: 375.6977502607676
+Camera2.cy: 375.16304284773306
+
+# Kannala-Brandt distortion parameters
+Camera2.k1: 0.023250175950702936
+Camera2.k2: -0.007143432494150952
+Camera2.k3: -0.0030745158991524717
+Camera2.k4: 0.00030001305925754724
+
+Stereo.T_c1_c2: !!opencv-matrix
+  rows: 4
+  cols: 4
+  dt: f
+  data: [ 0.999996, -0.00189383, -0.00208936,   0.09162640164501203,
+          0.00193131,    0.999835,    0.018084, 0.00043974619970855533,
+          0.00205476,   -0.018088,    0.999834, 0.0006116982533013348,
+            0.0,0.0,0.0,1.0]
+
+# Camera resolution
+Camera.width: 750
+Camera.height: 750
+
+# Lapping area between images
+Camera1.overlappingBegin: 15
+Camera1.overlappingEnd: 750
+
+Camera2.overlappingBegin: 0
+Camera2.overlappingEnd: 735
+
+# Camera frames per second
+Camera.fps: 15
+
+# Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
+Camera.RGB: 0
+
+# Close/Far threshold. Baseline times.
+Stereo.ThDepth: 60.0
+
+#--------------------------------------------------------------------------------------------
+# ORB Parameters
+#--------------------------------------------------------------------------------------------
+
+# ORB Extractor: Number of features per image
+ORBextractor.nFeatures: 1200
+
+# ORB Extractor: Scale factor between levels in the scale pyramid
+ORBextractor.scaleFactor: 1.2
+
+# ORB Extractor: Number of levels in the scale pyramid
+ORBextractor.nLevels: 8
+
+
+# ORB Extractor: Fast threshold
+# Image is divided in a grid. At each cell FAST are extracted imposing a minimum response.
+# Firstly we impose iniThFAST. If no corners are detected we impose a lower value minThFAST
+# You can lower these values if your images have low contrast
+ORBextractor.iniThFAST: 80
+ORBextractor.minThFAST: 30
+
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth: 1.0
+Viewer.PointSize: 2.0
+Viewer.CameraSize: 0.05
+Viewer.CameraLineWidth: 2.0
+Viewer.ViewpointX: 0.0
+Viewer.ViewpointY: -10.0
+Viewer.ViewpointZ: -0.1
+Viewer.ViewpointF: 2000.0
